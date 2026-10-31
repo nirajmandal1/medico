@@ -39,10 +39,10 @@ pc = Pinecone(api_key=PINECONE_API_KEY)
 index_name = os.environ.get("PINECONE_INDEX_NAME", "medical-chatbot")
 
 try:
-    existing_index_names = [idx["name"] for idx in pc.list_indexes()]
+    existing_index_names = [idx.name for idx in pc.list_indexes()]
 except Exception:
     try:
-        existing_index_names = pc.list_indexes().names()
+        existing_index_names = [idx["name"] for idx in pc.list_indexes()]
     except Exception:
         existing_index_names = []
 
