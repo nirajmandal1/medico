@@ -25,27 +25,34 @@ pip install -r requirements.txt
 ```
 
 
-### Create a `.env` file in the root directory and add your Pinecone & openai credentials as follows:
+### STEP 03 - Create `.env` file from `.env.example`
+Add your Pinecone and LLM (Groq or OpenAI) credentials in `.env`:
 
 ```ini
-PINECONE_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-OPENAI_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+PINECONE_API_KEY = "your_pinecone_api_key"
+PINECONE_INDEX_NAME = "medical-chatbot"
+
+# LLM Provider (Groq free tier or OpenAI)
+OPENAI_API_KEY = "your_api_key"
+OPENAI_BASE_URL = "https://api.groq.com/openai/v1"
+OPENAI_MODEL = "openai/gpt-oss-20b"
+PORT = 8080
 ```
 
-
+### STEP 04 - Store Embeddings to Pinecone
 ```bash
-# run the following command to store embeddings to pinecone
 python store_index.py
 ```
 
+### STEP 05 - Run the Web Application
 ```bash
-# Finally run the following command
 python app.py
 ```
+*(Or double-click `run.bat` on Windows)*
 
-Now,
+Open your browser at:
 ```bash
-open up localhost:
+http://localhost:8080
 ```
 
 
