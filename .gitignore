@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Environments and Secrets
+.env
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
