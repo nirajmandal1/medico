@@ -48,8 +48,11 @@ def init_rag_system():
         embeddings = download_hugging_face_embeddings()
 
         print(f"[INFO] Connecting to Pinecone index: '{INDEX_NAME}'...")
-        docsearch = PineconeVectorStore.from_existing_index(
-            index_name=INDEX_NAME,
+        from pinecone import Pinecone
+        pc = Pinecone(api_key=pinecone_key)
+        index = pc.Index(INDEX_NAME)
+        docsearch = PineconeVectorStore(
+            index=index,
             embedding=embeddings
         )
 

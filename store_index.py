@@ -58,10 +58,16 @@ if index_name not in existing_index_names:
 else:
     print(f"Found existing Pinecone index: '{index_name}'.")
 
-print(f"Upserting embeddings for {len(text_chunks)} chunks to Pinecone...")
-docsearch = PineconeVectorStore.from_documents(
-    documents=text_chunks,
-    index_name=index_name,
-    embedding=embeddings, 
-)
-print("[SUCCESS] All documents indexed into Pinecone successfully!")
+index = pc.Index(index_name)
+docsearch = PineconeVectorStore(index=index, embedding=embeddings)
+
+batch_size = 100
+total_chunks = len(text_chunks)
+print(f"Upserting embeddings for {total_chunks} chunks in batches of {batch_size}...")
+
+for i in range(0, total_chunks, batch_size):
+    batch = text_chunks[i:i + batch_size]
+    docsearch.add_documents(batch)
+    print(f"Progress: [{min(i + batch_size, total_chunks)}/{total_chunks}] chunks uploaded to Pinecone.")
+
+print("\n[SUCCESS] All documents successfully indexed and stored in Pinecone!")
