@@ -55,7 +55,8 @@ def init_rag_system():
 
         retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 3})
         model_name = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
-        chat_model = ChatOpenAI(model=model_name)
+        base_url = os.environ.get("OPENAI_BASE_URL", "").strip() or None
+        chat_model = ChatOpenAI(model=model_name, base_url=base_url)
 
         prompt = ChatPromptTemplate.from_messages([
             ("system", system_prompt),
@@ -105,7 +106,16 @@ def chat():
             answer = response.get("answer", "No answer found.")
             return str(answer)
         except Exception as e:
-            return f"Error executing query: {str(e)}"
+            err_str = str(e)
+            if "insufficient_quota" in err_str or "credit_balance_exhausted" in err_str:
+                return (
+                    "<strong>OpenAI Notice:</strong><br>"
+                    "Your OpenAI API key has 0 remaining credits (account balance exhausted).<br>"
+                    "To fix this:<br>"
+                    "1. Add credits to your OpenAI account at <a href='https://platform.openai.com/settings/organization/billing' target='_blank'>OpenAI Billing</a>.<br>"
+                    "2. <em>Or</em> use a completely free provider like <strong>Groq</strong> (Free Llama 3) by setting <code>OPENAI_BASE_URL=https://api.groq.com/openai/v1</code> in <code>.env</code>."
+                )
+            return f"Error executing query: {err_str}"
     else:
         return (
             "<strong>Medical Assistant:</strong><br>"
